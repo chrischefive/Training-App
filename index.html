@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Training</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Training">
+<meta name="theme-color" content="#130B22">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-v180.png">
+<link rel="apple-touch-icon" sizes="167x167" href="./icons/apple-touch-icon-v180-167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./icons/apple-touch-icon-v180-152.png">
+<link rel="apple-touch-icon" sizes="120x120" href="./icons/apple-touch-icon-v180-120.png">
+<link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+<div id="celebrationFx" aria-hidden="true"></div>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><b id="typeLabel">Situps</b> · Log</div>
+    <div class="head-right">
+      <div class="streak" id="streak">0 Tage Streak</div>
+      <div class="gear" id="settingsBtn">⚙</div>
+    </div>
+  </header>
+  <div class="rb-strip"></div>
+
+  <div id="backupBanner" class="backup-banner" style="display:none;">
+    <div class="backup-banner-text" id="backupBannerText">Backup empfohlen</div>
+    <div class="backup-banner-actions">
+      <button id="backupBannerSave">Jetzt sichern</button>
+      <button id="backupBannerLater">Später</button>
+    </div>
+  </div>
+
+  <div class="type-switch">
+    <button class="type-btn active" data-type="situps">Situps</button>
+    <button class="type-btn" data-type="pushups">Liegestütze</button>
+    <button class="type-btn" id="weightTopBtn" data-type="weight">Gewicht</button>
+  </div>
+
+  <!-- ===================== TAB: LOG ===================== -->
+  <div class="view active" id="viewLog">
+
+    <div class="dial-shell">
+      <svg class="ring" viewBox="0 0 230 230" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="rbGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#FF3D63"/>
+            <stop offset="20%" stop-color="#FF8C1A"/>
+            <stop offset="40%" stop-color="#FFE23D"/>
+            <stop offset="60%" stop-color="#2FE88A"/>
+            <stop offset="80%" stop-color="#3E8CFF"/>
+            <stop offset="100%" stop-color="#C264FF"/>
+          </linearGradient>
+        </defs>
+        <circle id="ringTrack" cx="115" cy="115" r="107" fill="none" stroke-width="4"/>
+        <circle id="ringProgress" cx="115" cy="115" r="107" fill="none" stroke="url(#rbGrad)" stroke-width="4"
+          stroke-linecap="round" transform="rotate(-90 115 115)" stroke-dasharray="672" stroke-dashoffset="672"/>
+      </svg>
+      <div class="dial" id="dialBtn">
+        <div class="dial-num" id="todayTotal">0</div>
+        <div class="dial-label">heute</div>
+      </div>
+    </div>
+    <div class="goal-line" id="goalLine"></div>
+
+    <div class="quick" id="quickChips"></div>
+    <div class="custom-row">
+      <input type="number" inputmode="numeric" id="customInput" placeholder="Eigene Anzahl">
+      <button id="customAdd">Eintragen</button>
+    </div>
+
+    <div class="section-title">
+      <span>Heute</span>
+      <span class="link" id="editTodayBtn">Bearbeiten</span>
+    </div>
+    <div class="today-list" id="todayList"></div>
+
+    <div class="section-title"><span>Monat</span></div>
+    <div class="month-nav">
+      <div class="arrow" id="monthPrev">‹</div>
+      <div class="label" id="monthLabel">—</div>
+      <div class="arrow" id="monthNext">›</div>
+    </div>
+    <div class="cal">
+      <div class="cal-weekdays">
+        <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="stat-row cols3">
+      <div class="stat"><div class="stat-num" id="mGesamt">0</div><div class="stat-lbl">Gesamt</div></div>
+      <div class="stat"><div class="stat-num" id="mTage">0</div><div class="stat-lbl">Trainingstage</div></div>
+      <div class="stat"><div class="stat-num" id="mZiel">0</div><div class="stat-lbl">Ziel erreicht</div></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: STATISTIK ===================== -->
+  <div class="view" id="viewStats">
+
+    <div class="section-title"><span>Übersicht</span></div>
+    <div class="stat-row cols2">
+      <div class="stat"><div class="stat-num" id="sTotalReps">0</div><div class="stat-lbl">Gesamt</div><div class="stat-sub" id="sTotalSub"></div></div>
+      <div class="stat"><div class="stat-num" id="sTrainedDays">0</div><div class="stat-lbl">Trainingstage</div></div>
+      <div class="stat"><div class="stat-num" id="sCurStreak">0</div><div class="stat-lbl">Aktuelle Streak</div></div>
+      <div class="stat"><div class="stat-num" id="sBestStreak">0</div><div class="stat-lbl">Längste Streak</div></div>
+      <div class="stat"><div class="stat-num" id="sZielquote">0%</div><div class="stat-lbl">Zielquote</div><div class="stat-sub" id="sZielquoteSub"></div></div>
+    </div>
+
+    <div class="section-title insight-title-row"><span>Trainingsdiagramm</span><div class="range-switch"><button class="active" data-chart-range="14">14T</button><button data-chart-range="30">30T</button><button data-chart-range="90">3M</button><button data-chart-range="365">1J</button><button data-chart-range="all">Alles</button></div></div>
+    <div class="chart-wrap"><canvas id="chart" height="120"></canvas></div>
+    <div class="hint-text" id="recordMarkerHint">Rekordtage werden im Diagramm mit 🏆 markiert.</div>
+    <div class="stat-row cols3">
+      <div class="stat"><div class="stat-num" id="statBest">0</div><div class="stat-lbl" id="rangeBestLabel">Bester Tag</div></div>
+      <div class="stat"><div class="stat-num" id="statAvg">0</div><div class="stat-lbl" id="rangeAvgLabel">Ø / Tag (14T)</div></div>
+      <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl" id="rangeTotalLabel">Gesamt (14T)</div></div>
+    </div>
+
+    <div class="section-title"><span>Fortschritt</span></div>
+    <div class="chart-wrap"><canvas id="growthChart" height="130"></canvas></div>
+    <div class="hint-text" id="growthHint"></div>
+
+    <div class="section-title"><span>Durchschnitte</span></div>
+    <div class="stat-row cols3">
+      <div class="stat"><div class="stat-num" id="avgPerTrainedDay">0</div><div class="stat-lbl">Ø / Trainingstag</div></div>
+      <div class="stat"><div class="stat-num" id="avgPerSet">0</div><div class="stat-lbl">Ø / Satz</div></div>
+      <div class="stat"><div class="stat-num" id="avgSetsPerDay">0</div><div class="stat-lbl">Ø Sätze / Tag</div></div>
+      <div class="stat"><div class="stat-num" id="avgPerWeek">0</div><div class="stat-lbl">Ø / Woche</div></div>
+      <div class="stat"><div class="stat-num" id="avgPerMonth">0</div><div class="stat-lbl">Ø / Monat</div></div>
+      <div class="stat"><div class="stat-num sm" id="avgTime">—</div><div class="stat-lbl">Ø Uhrzeit</div></div>
+    </div>
+
+    <div class="section-title"><span>Trainingszeiten</span></div>
+    <div class="bars-card">
+      <div class="bars-title">Verteilung nach Tageszeit</div>
+      <div class="bars-row" id="daypartBars"></div>
+    </div>
+
+    <div class="section-title"><span>Wochentage</span></div>
+    <div class="bars-card">
+      <div class="bars-title">Ø pro Trainingstag</div>
+      <div class="bars-row" id="weekdayBars"></div>
+    </div>
+
+    <div class="section-title"><span>Wochenende vs. Werktage</span></div>
+    <div class="stat-row cols2">
+      <div class="stat"><div class="stat-num" id="weekdayAvgStat">0</div><div class="stat-lbl">Ø Werktag</div></div>
+      <div class="stat"><div class="stat-num" id="weekendAvgStat">0</div><div class="stat-lbl">Ø Wochenende</div></div>
+    </div>
+
+    <div class="section-title"><span>Satzgrößen</span></div>
+    <div class="bars-card">
+      <div class="bars-title">Wie groß deine Sätze meist sind</div>
+      <div class="bars-row" id="bucketBars"></div>
+    </div>
+
+    <div class="section-title"><span>Trend</span></div>
+    <div class="trend-card">
+      <div><div class="trend-label">Diese Woche</div><div class="trend-sub" id="trendWeekSub">—</div></div>
+      <div class="trend-delta" id="trendWeekDelta">—</div>
+    </div>
+    <div class="trend-card">
+      <div><div class="trend-label">Dieser Monat</div><div class="trend-sub" id="trendMonthSub">—</div></div>
+      <div class="trend-delta" id="trendMonthDelta">—</div>
+    </div>
+
+    <div class="section-title"><span>Insights</span></div>
+    <div class="insight-grid">
+      <div class="insight-card"><div class="insight-kicker">Beständigkeit</div><div class="insight-big" id="consistency30">—</div><div class="insight-sub" id="consistency30Sub">letzte 30 Tage</div></div>
+      <div class="insight-card"><div class="insight-kicker">Trend</div><div class="insight-big" id="trainingSlope">—</div><div class="insight-sub" id="trainingSlopeSub">letzte 8 Wochen</div></div>
+    </div>
+    <div class="insight-card full"><div class="insight-kicker">Vor einem Jahr</div><div class="insight-text" id="trainingYearAgo">—</div></div>
+
+    <div class="section-title"><span>Damals vs. heute</span></div>
+    <div class="then-now-card" id="thenNowCard"></div>
+
+    <details class="data-explorer"><summary>🔎 Daten-Explorer</summary><div class="explorer-grid" id="dataExplorerGrid"></div></details>
+
+    <div class="section-title"><span>Aktuelle Herausforderungen</span></div>
+    <div class="challenge-board" id="trainingChallenges"></div>
+    <details class="ancestor-gallery"><summary>🏛️ Ahnengalerie <span id="trainingAncestorCount"></span></summary><div class="ancestor-grid" id="trainingAncestors"></div></details>
+
+    <div class="section-title insight-title-row"><span>14-Tage-Vergleich</span><button type="button" class="mini-toggle" id="trainingCompareToggle">Vergleich aus</button></div>
+    <div class="hint-text" id="trainingCompareHint">Optional: aktueller Zeitraum gegen die vorherigen 14 Tage.</div>
+
+    <div class="section-title"><span>Kalorien (geschätzt)</span></div>
+    <div class="stat-row cols3">
+      <div class="stat"><div class="stat-num" id="kcalToday">0</div><div class="stat-lbl">Heute</div></div>
+      <div class="stat"><div class="stat-num" id="kcalMonth">0</div><div class="stat-lbl">Diesen Monat</div></div>
+      <div class="stat"><div class="stat-num" id="kcalTotal">0</div><div class="stat-lbl">Gesamt</div></div>
+    </div>
+    <div class="hint-text">Grobe Schätzung auf Basis eines Richtwerts (MET) und deines zuletzt eingetragenen Körpergewichts — keine medizinisch exakte Messung.</div>
+
+    <div class="section-title"><span>Rekorde</span></div>
+    <div class="stat-row cols3">
+      <div class="stat"><div class="stat-num" id="bestSet">0</div><div class="stat-lbl">Größter Satz</div><div class="stat-sub" id="bestSetDate"></div></div>
+      <div class="stat"><div class="stat-num" id="bestDayEver">0</div><div class="stat-lbl">Bester Tag je</div><div class="stat-sub" id="bestDayEverDate"></div></div>
+      <div class="stat"><div class="stat-num" id="bestStreakEver">0</div><div class="stat-lbl">Längste Streak</div></div>
+      <div class="stat"><div class="stat-num" id="bestWeekEver">0</div><div class="stat-lbl">Rekordwoche</div><div class="stat-sub" id="bestWeekEverDate"></div></div>
+      <div class="stat"><div class="stat-num" id="bestMonthEver">0</div><div class="stat-lbl">Rekordmonat</div><div class="stat-sub" id="bestMonthEverDate"></div></div>
+      <div class="stat"><div class="stat-num" id="longestGap">0</div><div class="stat-lbl">Längste Pause</div><div class="stat-sub" id="longestGapDate"></div></div>
+    </div>
+
+    <div class="section-title"><span>Situps vs. Liegestütze</span></div>
+    <div class="stat-row cols2">
+      <div class="stat"><div class="stat-num" id="cmpSitupsTotal">0</div><div class="stat-lbl">Situps gesamt</div></div>
+      <div class="stat"><div class="stat-num" id="cmpPushupsTotal">0</div><div class="stat-lbl">Liegestütze gesamt</div></div>
+      <div class="stat"><div class="stat-num" id="cmpSitupsDays">0</div><div class="stat-lbl">Situps-Trainingstage</div></div>
+      <div class="stat"><div class="stat-num" id="cmpPushupsDays">0</div><div class="stat-lbl">Liegestütze-Trainingstage</div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB: GEWICHT – EINGABE ===================== -->
+  <div class="view" id="viewWeight">
+    <div class="section-title"><span>Eintragen</span></div>
+    <div class="weight-entry-card">
+      <div class="weight-input-row">
+        <label>Gewicht (kg)
+          <input type="number" inputmode="decimal" step="0.1" min="20" max="300" id="weightNewInput" placeholder="z. B. 75,0">
+        </label>
+        <label>Körperfett (%)
+          <input type="number" inputmode="decimal" step="0.1" min="2" max="70" id="fatNewInput" placeholder="z. B. 18,0">
+        </label>
+      </div>
+      <div class="weight-input-row weight-datetime-row">
+        <label>Datum
+          <input type="date" id="weightDateInput">
+        </label>
+        <label>Uhrzeit
+          <input type="time" id="weightTimeInput">
+        </label>
+      </div>
+      <button class="save-btn" id="weightAddBtn" type="button">Gewicht speichern</button>
+      <div class="status" id="weightSaveStatus"></div>
+    </div>
+  </div>
+
+  <!-- ===================== TAB: GEWICHT – STATISTIK ===================== -->
+  <div class="view" id="viewWeightStats">
+    <div class="section-title"><span>Überblick</span></div>
+    <div class="stat-row cols3 weight-overview">
+      <div class="stat"><div class="stat-num" id="wCurrent">—</div><div class="stat-lbl">Aktuell</div></div>
+      <div class="stat"><div class="stat-num" id="wCurrentFat">—</div><div class="stat-lbl">Körperfett</div></div>
+      <div class="stat"><div class="stat-num" id="wFatMass">—</div><div class="stat-lbl">Fettmasse</div></div>
+    </div>
+    <div class="stat-row cols2">
+      <div class="stat"><div class="stat-num" id="wGoal">—</div><div class="stat-lbl">Zielgewicht</div></div>
+      <div class="stat"><div class="stat-num" id="wToGoal">—</div><div class="stat-lbl">Differenz zum Ziel</div></div>
+    </div>
+    <div class="hint-text" id="weightGoalPlanHint"></div>
+
+
+    <div class="section-title"><span>Durchschnitt</span></div>
+    <div class="stat-row cols2">
+      <div class="stat"><div class="stat-num" id="wAvgWeek">—</div><div class="stat-lbl">Gewicht · 7 Tage</div></div>
+      <div class="stat"><div class="stat-num" id="wAvgMonth">—</div><div class="stat-lbl">Gewicht · 30 Tage</div></div>
+      <div class="stat"><div class="stat-num" id="wAvgFatWeek">—</div><div class="stat-lbl">Körperfett · 7 Tage</div></div>
+      <div class="stat"><div class="stat-num" id="wAvgFatMonth">—</div><div class="stat-lbl">Körperfett · 30 Tage</div></div>
+    </div>
+
+    <div class="section-title"><span>Insights</span></div>
+    <div class="insight-grid">
+      <div class="insight-card"><div class="insight-kicker">Gewichtstrend</div><div class="insight-big" id="weightSlope">—</div><div class="insight-sub">letzte 8 Wochen</div></div>
+      <div class="insight-card"><div class="insight-kicker">Prognose</div><div class="insight-big small" id="weightForecast">—</div><div class="insight-sub" id="weightForecastSub"></div></div>
+    </div>
+    <div class="insight-card full"><div class="insight-kicker">Vor einem Jahr</div><div class="insight-text" id="weightYearAgo">—</div></div>
+
+    <div class="section-title"><span>Persönliche Rekorde</span></div>
+    <div class="stat-row cols3">
+      <div class="stat"><div class="stat-num" id="recordLowWeight">—</div><div class="stat-lbl">Niedrigstes Gewicht</div><div class="stat-sub" id="recordLowWeightDate"></div></div>
+      <div class="stat"><div class="stat-num" id="recordHighWeight">—</div><div class="stat-lbl">Höchstes Gewicht</div><div class="stat-sub" id="recordHighWeightDate"></div></div>
+      <div class="stat"><div class="stat-num" id="recordLowFat">—</div><div class="stat-lbl">Niedrigster KFA</div><div class="stat-sub" id="recordLowFatDate"></div></div>
+    </div>
+
+    <div class="section-title"><span>Aktuelle Herausforderungen</span></div>
+    <div class="challenge-board" id="weightChallenges"></div>
+    <details class="ancestor-gallery"><summary>🏛️ Ahnengalerie <span id="weightAncestorCount"></span></summary><div class="ancestor-grid" id="weightAncestors"></div></details>
+
+    <div class="section-title insight-title-row"><span>Diagrammvergleich</span><button type="button" class="mini-toggle" id="weightCompareToggle">Vergleich aus</button></div>
+    <div class="hint-text" id="weightCompareHint">Optional: 6 Wochen/Monate gegen den direkt vorherigen Zeitraum.</div>
+
+    <div class="section-title"><span>6-Wochen-Trend</span></div>
+    <div class="chart-wrap weight-chart-card"><canvas id="weightWeekAvgChart" height="180"></canvas></div>
+
+    <div class="section-title"><span>6-Monats-Trend</span></div>
+    <div class="chart-wrap weight-chart-card"><canvas id="weightMonthAvgChart" height="180"></canvas></div>
+
+    <div class="section-title"><span>Gewichtsverlauf</span></div>
+    <div class="chart-wrap weight-chart-card"><canvas id="weightChart" height="190"></canvas></div>
+
+    <div class="section-title"><span>Körperzusammensetzung</span></div>
+    <div class="chart-wrap weight-chart-card"><canvas id="bodyFatChart" height="150"></canvas></div>
+    <div class="chart-wrap weight-chart-card"><canvas id="fatMassChart" height="150"></canvas></div>
+
+    <details class="weight-history-details">
+      <summary>Messverlauf <span id="weightHistoryCount"></span></summary>
+      <div id="weightHistoryList" class="today-list"></div>
+    </details>
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab-btn active" data-tab="log"><span class="ic">●</span>Log</button>
+  <button class="tab-btn" data-tab="stats"><span class="ic">▲</span>Statistik</button>
+</div>
+
+<div class="overlay" id="dayOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="dayModalTitle">Tag bearbeiten</div>
+      <div class="modal-close" id="dayModalClose">✕</div>
+    </div>
+    <div id="dayEditRows"></div>
+    <div class="add-row">
+      <input type="time" id="newSetTime">
+      <input type="number" inputmode="numeric" id="newSetReps" placeholder="Anzahl">
+      <button id="newSetAdd">+ Satz</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="weightEditOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Gewicht bearbeiten</div>
+      <div class="modal-close" id="weightEditClose">✕</div>
+    </div>
+    <div class="weight-edit-grid">
+      <label>Datum<input type="date" id="weightEditDate"></label>
+      <label>Uhrzeit<input type="time" id="weightEditTime"></label>
+    </div>
+    <div class="weight-edit-grid two">
+      <label>Gewicht (kg)<input type="number" inputmode="decimal" step="0.1" min="20" max="300" id="weightEditKg"></label>
+      <label>Körperfett (%)<input type="number" inputmode="decimal" step="0.1" min="2" max="70" id="weightEditFat"></label>
+    </div>
+    <div class="status" id="weightEditStatus"></div>
+    <div class="weight-edit-actions">
+      <button type="button" id="weightEditDelete">Messung löschen</button>
+      <button type="button" id="weightEditSave">Änderungen speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="chartZoomOverlay">
+  <div class="modal chart-zoom-modal">
+    <div class="modal-head">
+      <div class="modal-title" id="chartZoomTitle">Diagramm</div>
+      <div class="modal-close" id="chartZoomClose">✕</div>
+    </div>
+    <div class="chart-zoom-body"><canvas id="chartZoomCanvas" aria-label="Vergrößertes Diagramm"></canvas></div>
+  </div>
+</div>
+
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="settingsTitle">Optionen</div>
+      <div class="modal-close" id="settingsClose">✕</div>
+    </div>
+    <div class="settings-field">
+      <label>Design</label>
+      <div class="btn-row" id="themeRow"></div>
+    </div>
+    <hr class="divider">
+    <div class="settings-field">
+      <label>Trainingsziele</label>
+      <div class="settings-grid">
+        <div class="settings-mini">
+          <span>Situps · täglich</span>
+          <input type="number" inputmode="numeric" min="1" id="goalSitupsInput">
+        </div>
+        <div class="settings-mini">
+          <span>Liegestütze · täglich</span>
+          <input type="number" inputmode="numeric" min="1" id="goalPushupsInput">
+        </div>
+      </div>
+    </div>
+    <div class="settings-field">
+      <label>Startwerte</label>
+      <div class="settings-grid">
+        <div class="settings-mini">
+          <span>Situps · bisher</span>
+          <input type="number" inputmode="numeric" min="0" id="startSitupsInput">
+        </div>
+        <div class="settings-mini">
+          <span>Liegestütze · bisher</span>
+          <input type="number" inputmode="numeric" min="0" id="startPushupsInput">
+        </div>
+      </div>
+      <div class="hint">Startwerte zählen nur zu den Gesamtwerten und der Kalorienschätzung, nicht zu Streaks, Durchschnitten, Trends oder Bestleistungen.</div>
+    </div>
+    <div class="settings-field">
+      <label>Zielgewicht</label>
+      <div class="goal-date-row">
+        <input type="number" inputmode="decimal" step="0.1" min="20" max="300" id="weightGoalInput" placeholder="z. B. 72,0 kg">
+        <input type="date" id="weightGoalDateInput" aria-label="Wunschdatum für Zielgewicht">
+        <button type="button" id="weightGoalDateClear" class="goal-date-clear">Termin entfernen</button>
+      </div>
+      <div class="hint">Wunschdatum optional. „Termin entfernen“ lässt das Zielgewicht bestehen und entfernt nur Termin und Soll-Linie.</div>
+    </div>
+    <button class="save-btn" id="goalSave">Alle Optionen speichern</button>
+    <div class="status" id="settingsSaveStatus"></div>
+
+    <hr class="divider">
+    <div class="settings-field">
+      <label>Homescreen-Badge</label>
+      <div class="hint">Zeigt nur die heute noch offenen Punkte am App-Symbol: Situps, Liegestütze und Gewicht. Maximal 3; vergangene Tage werden nie addiert.</div>
+      <div class="btn-row"><button type="button" id="badgeEnableBtn">Homescreen-Badge aktivieren</button><button type="button" id="badgeTestBtn">Badge 3 testen</button><button type="button" id="badgeRestoreBtn">Aktuellen Stand setzen</button></div>
+      <div class="status" id="badgeStatus"></div>
+    </div>
+
+    <hr class="divider">
+    <div class="settings-field">
+      <label>Performance-Testmodus</label>
+      <div class="hint">Erzeugt Testdaten ausschließlich im Arbeitsspeicher und misst 10.000 / 50.000 / 100.000 Datensätze. Deine echten Daten werden weder verändert noch gespeichert.</div>
+      <div class="btn-row"><button type="button" id="performanceTestBtn">Performance-Test starten</button></div>
+      <div class="health-card" id="performanceResult">Noch nicht ausgeführt.</div>
+    </div>
+
+    <hr class="divider">
+    <div class="settings-field">
+      <label>Datenqualität</label>
+      <div class="health-card" id="dataQualityCheck">Prüfung läuft …</div>
+    </div>
+    <div class="settings-field">
+      <label>Backup-Gesundheit</label>
+      <div class="health-card" id="backupHealthCheck">Prüfung läuft …</div>
+    </div>
+
+    <hr class="divider">
+    <div class="settings-field">
+      <label>Daten sichern (z. B. für neues iPhone)</label>
+      <div class="hint">Als Datei sichern (z. B. bei iCloud Drive) oder als Text kopieren, z. B. für die Notizen-App oder Mail an dich selbst.</div>
+      <div class="btn-row">
+        <button id="saveFileBtn">Als Datei speichern</button>
+      </div>
+      <div class="btn-row">
+        <button id="exportBtn">Als Text anzeigen</button>
+        <button id="copyBtn">Kopieren</button>
+      </div>
+      <div class="hint" id="lastExportHint"></div>
+      <div class="backup-summary" id="backupSummary"></div>
+      <div class="backup-summary" id="storagePersistStatus">Speicherstatus wird geprüft …</div>
+      <div class="diagnostics" id="diagnosticsPanel" aria-live="polite"></div>
+      <textarea id="exportArea" readonly style="margin-top:10px;"></textarea>
+    </div>
+    <div class="settings-field">
+      <label>Daten wiederherstellen</label>
+      <div class="hint">Backup-Datei auswählen, oder gesicherten Text unten einfügen. Überschreibt aktuelle Daten auf diesem Gerät.</div>
+      <div class="btn-row">
+        <button id="importFileBtn">Datei auswählen</button>
+      </div>
+      <input type="file" id="importFileInput" accept="application/json,.json" style="display:none;">
+      <textarea id="importArea" placeholder="…oder Text hier einfügen"></textarea>
+      <div class="import-preview" id="importPreview" aria-live="polite">Noch kein Backup ausgewählt.</div>
+      <div class="btn-row"><button id="importBtn">Importieren</button></div>
+      <div class="status" id="importStatus"></div>
+    </div>
+  </div>
+</div>
+
+<script src="./js/core.js"></script>
+<script src="./js/navigation.js"></script>
+<script src="./js/training.js"></script>
+<script src="./js/weight.js"></script>
+<script src="./js/statistics.js"></script>
+<script src="./js/editors.js"></script>
+<script src="./js/settings-backup.js"></script>
+<script src="./js/insights.js"></script>
+<script src="./js/safety-ui.js"></script>
+<script src="./js/ui.js"></script>
+<script src="./js/qol.js"></script>
+<script src="./js/explorer.js"></script>
+<script src="./js/features190.js"></script>
+<script src="./js/features191.js"></script>
+<script src="./js/badge.js"></script>
+</body>
+</html>
